@@ -33,23 +33,23 @@ config = {
     "characters": [
         {
             "index": 0,
-            "class": "sorceress",
+            "class": "bard",
             "ilvl-endless": 1475,
             "ilvl-aor": 1475,
-            "lopang": False,
+            "lopang": True,
             "guildDonation": True,
         },
         {
             "index": 1,
-            "class": "arcana",
-            "ilvl-endless": 1370,
-            "ilvl-aor": 1475,
-            "lopang": False,
+            "class": "artillerist",
+            "ilvl-endless": 1445,
+            "ilvl-aor": 1445,
+            "lopang": True,
             "guildDonation": True,
         },
         {
             "index": 2,
-            "class": "sorceress",
+            "class": "reaper",
             "ilvl-endless": 1370,
             "ilvl-aor": 1445,
             "lopang": True,
@@ -57,23 +57,23 @@ config = {
         },
         {
             "index": 3,
-            "class": "sorceress",
+            "class": "machinist",
             "ilvl-endless": 1370,
-            "ilvl-aor": 1370,
+            "ilvl-aor": 1415,
             "lopang": True,
             "guildDonation": True,
         },
         {
             "index": 4,
-            "class": "sorceress",
+            "class": "glavier",
             "ilvl-endless": 1370,
-            "ilvl-aor": 1370,
+            "ilvl-aor": 1385,
             "lopang": True,
             "guildDonation": True,
         },
         {
             "index": 5,
-            "class": "sorceress",
+            "class": "scrapper",
             "ilvl-endless": 1370,
             "ilvl-aor": 1370,
             "lopang": True,
@@ -81,10 +81,10 @@ config = {
         },
         {
             "index": 6,
-            "class": "deathblade",
-            "ilvl-endless": 1100,
-            "ilvl-aor": 1100,
-            "lopang": True,
+            "class": "shadowhunter",
+            "ilvl-endless": 1370,
+            "ilvl-aor": 1370,
+            "lopang": False,
             "guildDonation": True,
         },
     ],
@@ -92,7 +92,7 @@ config = {
     "selectLevel": True,  # TODO: to be deprecated soon, DO NOT TOUCH
     "performance": False,  # set True for lower-end PCs
     "interact": "g",  # change this if you have binded it to something else eg.mouse button
-    "move": "left",  # or "right"
+    "move": "right",  # or "left"
     "blink": "space",
     "meleeAttack": "c",
     "awakening": "v",
@@ -103,7 +103,7 @@ config = {
     # "useSpeciality2": True, # not checking this for now
     "auraRepair": True,  # True if you have aura, if not then for non-aura users: MUST have your character parked near a repairer in city before starting the script
     "shortcutEnterChaos": True,  # you want to use True
-    "useHealthPot": True,  # you want to use True
+    "useHealthPot": False,  # you want to use True
     # You might not want to touch anything below, because I assume you have your game setup same as mine :) otherwise something might not work properly!
     "regions": {
         "minimap": (1655, 170, 260, 200),  # (1700, 200, 125, 120)
