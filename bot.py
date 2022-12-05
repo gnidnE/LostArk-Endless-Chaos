@@ -1143,25 +1143,28 @@ def useAbilities():
             # check high-priority mobs
             if states["status"] == "floor1" and checkFloor2Mob():
                 calculateMinimapRelative(states["moveToX"], states["moveToY"])
-            elif (
-                states["status"] == "floor2"
-                # and config["performance"] == False
-                and checkFloor2Boss()
-            ):
-                calculateMinimapRelative(states["moveToX"], states["moveToY"])
-                moveToMinimapRelative(
-                    states["moveToX"], states["moveToY"], 950, 1050, True
-                )
-                fightFloor2Boss()
-            elif (
-                states["status"] == "floor2"
-                and (i == 0 or i == 4)
-                and checkFloor2Elite()
-            ):
-                calculateMinimapRelative(states["moveToX"], states["moveToY"])
-                moveToMinimapRelative(
-                    states["moveToX"], states["moveToY"], 750, 850, False
-                )
+            elif states["status"] == "floor2":
+                if config["performance"] == False and checkFloor2Boss():
+                    calculateMinimapRelative(states["moveToX"], states["moveToY"])
+                    moveToMinimapRelative(
+                        states["moveToX"], states["moveToY"], 950, 1050, True
+                    )
+                    # fightFloor2Boss()
+                elif (
+                    config["performance"] == True
+                    and (i == 3 or i == 5 or i == 7)
+                    and checkFloor2Boss()
+                ):
+                    calculateMinimapRelative(states["moveToX"], states["moveToY"])
+                    moveToMinimapRelative(
+                        states["moveToX"], states["moveToY"], 950, 1050, True
+                    )
+                    # fightFloor2Boss()
+                elif (i == 0 or i == 3 or i == 5) and checkFloor2Elite():
+                    calculateMinimapRelative(states["moveToX"], states["moveToY"])
+                    moveToMinimapRelative(
+                        states["moveToX"], states["moveToY"], 750, 850, False
+                    )
             elif states["status"] == "floor3" and checkFloor3GoldMob():
                 calculateMinimapRelative(states["moveToX"], states["moveToY"])
                 moveToMinimapRelative(
@@ -1261,6 +1264,12 @@ def checkCDandCast(ability):
         else:
             # 瞬发 ability
             pyautogui.press(ability["key"])
+            if config["performance"] == True:
+                sleep(50, 80)
+                pyautogui.press(ability["key"])
+                sleep(50, 80)
+                pyautogui.press(ability["key"])
+                return
             start_ms = int(time.time_ns() / 1000000)
             now_ms = int(time.time_ns() / 1000000)
             while pyautogui.locateOnScreen(
@@ -1390,7 +1399,6 @@ def checkFloor2Boss():
         "./screenshots/boss.png", confidence=0.65
     )
     if bossLocation != None:
-        bossLocation = tuple(bossLocation)
         left, top = bossLocation
         states["moveToX"] = left
         states["moveToY"] = top
