@@ -126,6 +126,16 @@ def main():
                         sleep(1400, 1600)
                         doGuildDonation()
                         sleep(1400, 1600)
+                    #rapport
+                    if (
+                        config["enableRapport"]
+                        and config["characters"][states["currentCharacter"]]["rapport"]
+                    ):
+                        sleep(500, 1000)
+                        print("Doing Rapport")
+                        doRapport()
+                        sleep(1400, 1600)
+
                     # lopang
                     if (
                         config["enableLopang"]
@@ -166,6 +176,16 @@ def main():
                         sleep(1400, 1600)
                         doGuildDonation()
                         sleep(1400, 1600)
+                    #rapport
+                    if (
+                        config["enableRapport"]
+                        and config["characters"][states["currentCharacter"]]["rapport"]
+                    ):
+                        sleep(500, 1000)
+                        print("Doing Rapport")
+                        doRapport()
+                        sleep(1400, 1600)
+                      
                     # lopang
                     sleep(1400, 1600)
                     if (
@@ -652,7 +672,8 @@ def enterChaos():
             "./screenshots/dc.png",
             region=config["regions"]["center"],
         )
-        if dc != None:
+        enterServer = pyautogui.locateCenterOnScreen("./screenshots/enterServer.png")
+        if dc != None or enterServer != None:
             closeGameByClickingDialogue()
             return
 
@@ -757,7 +778,9 @@ def doFloor2():
     if offlineCheck():
         closeGameByClickingDialogue()
         return
-
+    if gameCrashCheck():
+        states["status"] = "restart"
+        return
     if checkTimeout():
         quitChaos()
         return
@@ -863,14 +886,17 @@ def doFloor3Portal():
 
 def doFloor3():
     waitForLoading()
+    if offlineCheck():
+        closeGameByClickingDialogue()
+        return
     if gameCrashCheck():
         states["status"] = "restart"
         return
-    print("real floor 3 loaded")
-
     if checkTimeout():
         quitChaos()
         return
+
+    print("real floor 3 loaded")
 
     clearQuest()
     sleep(500, 550)
@@ -1725,6 +1751,17 @@ def randomMove():
     sleep(200, 250)
 
 
+# def isPortalFlame(image, x, y):
+#     r, g, b = image.getpixel((x, y))
+#     flag = False
+#     dist = 5
+#     blueFlag = r in range(1, 3) and g in range(1, 4) and b in range(3, 6)
+#     purpleFlag = r in range(3, 6) and g in range(1, 4) and b in range(1, 3)
+#     if blueFlag or purpleFlag:
+#         return True
+#     return flag
+
+
 def enterPortal():
     # repeatedly move and press g until black screen
     sleep(1100, 1200)
@@ -1738,16 +1775,76 @@ def enterPortal():
 
     enterTime = int(time.time_ns() / 1000000)
     while True:
+        # try to enter portal until black screen
         im = pyautogui.screenshot(region=(1652, 168, 240, 210))
         r, g, b = im.getpixel((1772 - 1652, 272 - 168))
         if r == 0 and g == 0 and b == 0:
+            print("portal entered")
             return
 
         nowTime = int(time.time_ns() / 1000000)
-        if nowTime - enterTime > 6000:
+        if nowTime - enterTime > 30000:
             # FIXME:
             states["instanceStartTime"] = -1
             return
+
+        # if states["status"] == "floor2" or states["status"] == "floor3":
+        #     portalArea = pyautogui.screenshot(region=config["regions"]["portal"])
+        #     width, height = portalArea.size
+        #     order = spiralSearch(
+        #         width, height, math.floor(width / 2), math.floor(height / 2)
+        #     )
+        #     for entry in order:
+        #         if entry[1] >= width or entry[0] >= height:
+        #             continue
+        #         if isPortalFlame(portalArea, entry[1], entry[0]):
+        #             left, top, _w, _h = config["regions"]["portal"]
+        #             states["moveToX"] = left + entry[1]
+        #             states["moveToY"] = top + entry[0]
+        #             print(
+        #                 "portal flame x: {} y: {}".format(
+        #                     states["moveToX"], states["moveToY"]
+        #                 )
+        #             )
+        #             pyautogui.press(config["interact"])
+        #             pyautogui.click(
+        #                 x=states["moveToX"], y=states["moveToY"], button=config["move"]
+        #             )
+        #             im = pyautogui.screenshot(region=(1652, 168, 240, 210))
+        #             r, g, b = im.getpixel((1772 - 1652, 272 - 168))
+        #             while r != 0 or g != 0 or b != 0:
+        #                 pyautogui.press(config["interact"])
+        #                 sleep(50, 60)
+        #                 nowTime = int(time.time_ns() / 1000000)
+        #                 if nowTime - enterTime > 10000:
+        #                     # FIXME:
+        #                     states["instanceStartTime"] = -1
+        #                     return
+        #             print("portal entered")
+        #             return
+
+        # portalFlame = pyautogui.locateCenterOnScreen(
+        #     "./screenshots/portalFlame.png",
+        #     grayscale=True,
+        #     confidence=0.3,
+        # )
+        # if portalFlame != None:
+        #     x, y = portalFlame
+        #     pyautogui.press(config["interact"])
+        #     pyautogui.click(x=x, y=y, button=config["move"])
+        #     im = pyautogui.screenshot(region=(1652, 168, 240, 210))
+        #     r, g, b = im.getpixel((1772 - 1652, 272 - 168))
+        #     while r != 0 or g != 0 or b != 0:
+        #         pyautogui.press(config["interact"])
+        #         sleep(50, 60)
+
+        #         nowTime = int(time.time_ns() / 1000000)
+        #         if nowTime - enterTime > 10000:
+        #             # FIXME:
+        #             states["instanceStartTime"] = -1
+        #             return
+        #     print("portal entered")
+        #     return
 
         if (
             states["moveToX"] == config["screenCenterX"]
@@ -1760,12 +1857,6 @@ def enterPortal():
             pyautogui.click(
                 x=states["moveToX"], y=states["moveToY"], button=config["move"]
             )
-            sleep(50, 60)
-            pyautogui.press(config["interact"])
-            pyautogui.click(
-                x=states["moveToX"], y=states["moveToY"], button=config["move"]
-            )
-            sleep(50, 60)
             pyautogui.press(config["interact"])
 
 
@@ -1838,6 +1929,9 @@ def waitForLoading():
     print("loading")
     blackScreenStartTime = int(time.time_ns() / 1000000)
     while True:
+        if offlineCheck():
+            closeGameByClickingDialogue()
+            return
         if gameCrashCheck():
             return
         currentTime = int(time.time_ns() / 1000000)
@@ -2386,6 +2480,83 @@ def doGuildDonation():
     pyautogui.press("esc")
     sleep(800, 900)
 
+def doRapport():
+    sleep(1000, 2000)
+    print("doing Rapport")
+    if gameCrashCheck():
+        states["status"] = "restart"
+        return
+    if offlineCheck():
+        closeGameByClickingDialogue()
+        return
+    sleep(3500, 4600)
+    #dorapport
+    bifrostAvailable = bifrostGoTo(2)
+    if bifrostAvailable == False:
+        return
+    songandemoterapport()
+
+def songandemoterapport():
+
+    print("song and emote for rapport")
+    pyautogui.keyDown("alt")
+    sleep(800, 900)
+    pyautogui.press("w")
+    sleep(800, 900)
+    pyautogui.keyUp("alt")
+    sleep(800, 900)
+    spamG(1000)
+    sleep(2000, 3000)
+    pyautogui.moveTo(105, 870)
+    sleep(200, 300)
+    pyautogui.click(button="left")
+    sleep(200, 300)
+    pyautogui.moveTo(1630, 403)
+    sleep(300, 600)
+    pyautogui.click(button="left")
+    sleep(300, 600)
+    pyautogui.moveTo(1676, 551)
+    sleep(300, 400)
+    pyautogui.click(button="left")
+    sleep(30000, 31000) #1songduration
+    pyautogui.moveTo(105, 870)
+    sleep(300, 600)
+    pyautogui.click(button="left")
+    sleep(300, 600)
+    pyautogui.moveTo(1676, 452)
+    sleep(300, 600)
+    pyautogui.click(button="left")
+    sleep(300, 600)
+    pyautogui.moveTo(1676, 551)
+    sleep(300, 400)
+    pyautogui.click(button="left")
+    sleep(30000, 31000) #2songduration
+    pyautogui.moveTo(118, 904)
+    sleep(300, 400)
+    pyautogui.click(button="left")
+    sleep(300, 400)
+    pyautogui.moveTo(155, 454)
+    sleep(300, 400)
+    pyautogui.click(button="left")
+    sleep(300, 400)
+    pyautogui.moveTo(203, 595)
+    sleep(300, 400)
+    pyautogui.click(button="left")
+    sleep(17000, 20000) #1emoteduration
+    pyautogui.moveTo(118, 904)
+    sleep(300, 400)
+    pyautogui.click(button="left")
+    pyautogui.moveTo(311, 454)
+    sleep(300, 400)
+    pyautogui.click(button="left")
+    sleep(300, 400)
+    pyautogui.moveTo(203, 595)
+    sleep(300, 400)
+    pyautogui.click(button="left")
+    sleep(17000, 20000) #2emoteduration
+    pyautogui.moveTo(1832, 900)
+    sleep(300, 400)
+    pyautogui.click(button="left")
 
 def doLopang():
     sleep(1000, 2000)
